@@ -1,0 +1,5 @@
+ALTER TABLE posts
+DROP COLUMN version;
+
+ALTER TABLE users
+DROP COLUMN version;
