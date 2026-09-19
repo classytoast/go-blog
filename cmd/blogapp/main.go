@@ -18,6 +18,9 @@ import (
 	posts_postgres_repository "github.com/classytoast/go-blog/internal/features/posts/repository/postgres"
 	posts_service "github.com/classytoast/go-blog/internal/features/posts/service"
 	posts_transport_http "github.com/classytoast/go-blog/internal/features/posts/transport/http"
+	statistics_postgres_repository "github.com/classytoast/go-blog/internal/features/statistics/repository/postgres"
+	statistics_service "github.com/classytoast/go-blog/internal/features/statistics/service"
+	statistics_transport_http "github.com/classytoast/go-blog/internal/features/statistics/transport/http"
 	users_postgres_repository "github.com/classytoast/go-blog/internal/features/users/repository/postgres"
 	users_service "github.com/classytoast/go-blog/internal/features/users/service"
 	users_transport_http "github.com/classytoast/go-blog/internal/features/users/transport/http"
@@ -67,6 +70,11 @@ func main() {
 	postService := posts_service.NewPostService(postRepository)
 	postHandler := posts_transport_http.NewPostHTTPHandler(postService)
 
+	logger.Debug("initializing feature", zap.String("feature", "statistics"))
+	statisticsRepository := statistics_postgres_repository.NewStatisticsRepository(pool)
+	statisticsService := statistics_service.NewStatisticsService(statisticsRepository)
+	statisticsHandler := statistics_transport_http.NewStatisticsHTTPHandler(statisticsService)
+
 	logger.Debug("initializing HTTP server")
 	httpServer := core_http_server.NewHTTPServer(
 		core_http_server.NewConfigMust(),
@@ -79,6 +87,7 @@ func main() {
 	apiVersionRouter := core_http_server.NewApiVersionRouter(core_http_server.ApiVersion1)
 	apiVersionRouter.RegisterRoutes(userHandler.Routes()...)
 	apiVersionRouter.RegisterRoutes(postHandler.Routes()...)
+	apiVersionRouter.RegisterRoutes(statisticsHandler.Routes()...)
 	httpServer.RegisterAPIRouters(apiVersionRouter)
 
 	logger.Debug("Starting blog application")
