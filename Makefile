@@ -79,7 +79,7 @@ blogapp-run:
 blogapp-deploy:
 	@docker compose up -d --build blogapp
 
-blogapp-down:
+blogapp-undeploy:
 	@docker compose down blogapp
 
 ps:
