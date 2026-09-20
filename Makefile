@@ -76,3 +76,12 @@ blogapp-run:
 	fi; \
 	go run ${PROJECT_ROOT}/cmd/blogapp/main.go
 
+blogapp-deploy:
+	@docker compose up -d --build blogapp
+
+blogapp-down:
+	@docker compose down blogapp
+
+ps:
+	@docker compose ps
+
